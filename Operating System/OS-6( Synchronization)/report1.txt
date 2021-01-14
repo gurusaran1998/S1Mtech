@@ -1,0 +1,95 @@
+
+
+Answers:
+1.
+Code:
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <unistd.h>
+
+int buf;
+sem_t m;
+
+void *pass_fn1(void *arg) {
+	int temp;
+	sem_wait(&m);
+    	temp = buf;
+        printf("The passed value is %d.\n", temp);
+    	sem_post(&m);
+        return((void *)0);
+}
+
+void  main() {
+
+	pthread_t tid;
+	sem_init(&m,0,1);
+	sem_wait(&m);
+	printf("Enter the number you want to pass:");
+	scanf("%d", &buf);
+    	sem_post(&m);
+	pthread_create(&tid, NULL, pass_fn1, NULL);
+	sleep(1);
+	exit(0);
+}
+
+
+Output:
+
+Enter the number you want to pass:45
+The value passed is 45.
+
+
+2.
+Code:
+#include <stdio.h>
+#include <semaphore.h>
+#include <pthread.h>
+
+int buf;
+sem_t full, mutex;
+
+void *multiplication (void *args) {
+
+    int temp;
+    sem_wait(&full);
+    temp=buf;
+    sem_post(&mutex);
+
+    sem_wait(&full);
+    buf=buf* temp;
+    sem_post(&mutex);
+
+}
+
+int main() {
+
+    pthread_t tid;
+    sem_init(&full, 0, 0);
+
+    sem_init(&mutex, 0, 1);
+
+    pthread_create(&tid, NULL, multiplication, NULL);
+
+    for (int i=0 ; i<2 ; i++) {
+        sem_wait(&mutex);
+        printf("Enter the number:");
+        scanf("%d", &buf);
+        sem_post(&full);
+    }
+
+    sem_wait(&mutex);
+   printf("The product is %d\n",buf);
+}
+
+Output:
+
+Enter the number:45
+Enter the number:32
+The product is 1440
+
+
+
+
+

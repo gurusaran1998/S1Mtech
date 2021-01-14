@@ -1,0 +1,13 @@
+1. git clone https://github.com/R3x/How2Kernel/
+2. ./setup.sh -v x86
+3. cd images/
+4. sudo apt-get install qemu-system 
+5. tar xvf x86_64.tar.gz
+6. cd x86_64
+7. ./start.sh
+
+scp -P 5022 <name> root@localhost:.
+
+lsmod(list the modules)
+insmod(insert module)
+rmmod(remove the module)
